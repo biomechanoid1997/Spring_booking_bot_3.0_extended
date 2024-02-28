@@ -25,6 +25,8 @@ public class LorBookCommand implements WorkerCommand {
         }
         UserModel userModel = UserHelper.findUser(update.getMessage().getFrom().getId().toString());
         userModel.setTgId(String.valueOf(update.getMessage().getFrom().getId()));
+        userModel.setPerson_name(String.valueOf(update.getMessage().getFrom().getFirstName()));
+        userModel.setUsername(String.valueOf(update.getMessage().getFrom().getUserName()));
         userModel.setDoctorEnum(DoctorEnum.LOR);
         UserHelper.saveUser(userModel);
         return sendDefaultMessage(update);

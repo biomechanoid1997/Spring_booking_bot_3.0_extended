@@ -5,6 +5,8 @@ import com.example.spring_booking_bot.helpers.DoctorEnum;
 import com.example.spring_booking_bot.helpers.DoctorHelper;
 import com.example.spring_booking_bot.helpers.UserHelper;
 import com.example.spring_booking_bot.models.UserModel;
+import com.example.spring_booking_bot.repos.BookRepo;
+import com.example.spring_booking_bot.repos.UserRepo;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -25,6 +27,8 @@ public class AllergologBookCommand implements WorkerCommand {
         }
         UserModel userModel = UserHelper.findUser(update.getMessage().getFrom().getId().toString());
         userModel.setTgId(String.valueOf(update.getMessage().getFrom().getId()));
+        userModel.setPerson_name(String.valueOf(update.getMessage().getFrom().getFirstName()));
+        userModel.setUsername(String.valueOf(update.getMessage().getFrom().getUserName()));
         userModel.setDoctorEnum(DoctorEnum.ALLERGOLOG);
         UserHelper.saveUser(userModel);
         return sendDefaultMessage(update);
@@ -42,12 +46,14 @@ public class AllergologBookCommand implements WorkerCommand {
         List<KeyboardRow>list1 = new ArrayList<>();
         list1.add(k1);
         KeyboardRow k2 = new KeyboardRow();
+        ////////////////////////////////////////////////////////////////////// This might be the needed sector
         if (list.size()>2){
             for (int i = 0; i < list.size(); i++) {
                 k2.add(new KeyboardButton(list.get(i)));
             }
             list1.add(k2);
         }
+        ////////////////////////////////////////////////////////////////////////////////
         ReplyKeyboardMarkup replyKeyboardMarkup = new ReplyKeyboardMarkup();
         replyKeyboardMarkup.setKeyboard(list1);
         sendMessage.setReplyMarkup(replyKeyboardMarkup);

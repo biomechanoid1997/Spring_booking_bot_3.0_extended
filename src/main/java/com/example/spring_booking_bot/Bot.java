@@ -5,6 +5,8 @@ import com.example.spring_booking_bot.commands.ChooseTime;
 import com.example.spring_booking_bot.commands.LoginCommand;
 import com.example.spring_booking_bot.commands.WorkerCommand;
 import com.example.spring_booking_bot.commands.bookcommand.*;
+import com.example.spring_booking_bot.commands.loginCommand.LeaveYourNameCommand;
+import com.example.spring_booking_bot.commands.loginCommand.RemainAnonymousCommand;
 import com.example.spring_booking_bot.repos.UserRepo;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -28,7 +30,7 @@ public class Bot extends TelegramLongPollingBot {
     }
     @Override
     public String getBotToken(){
-        return "6836627535:AAHTzFFR6lx1VHLosuecMBekLoTZ_GnH5rA";
+        return "6352247546:AAFWyC_txjP4__i3qHJ5pqd0Bfiv9xb4ICc";
     }
 
 
@@ -55,6 +57,8 @@ public class Bot extends TelegramLongPollingBot {
         list.add(new LorBookCommand());
         list.add(new OkulistBookCommand());
         list.add(new ChooseTime());
+        list.add(new RemainAnonymousCommand());/////////list with bugged class/
+        list.add(new LeaveYourNameCommand());
         for (WorkerCommand w: list){
             if (w.start(update)!= null){
                 sendMessage = w.start(update);
