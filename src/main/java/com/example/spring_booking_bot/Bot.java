@@ -1,12 +1,15 @@
 package com.example.spring_booking_bot;
 
-import com.example.spring_booking_bot.commands.BookCommand;
-import com.example.spring_booking_bot.commands.ChooseTime;
-import com.example.spring_booking_bot.commands.LoginCommand;
-import com.example.spring_booking_bot.commands.WorkerCommand;
+import com.example.spring_booking_bot.commands.*;
 import com.example.spring_booking_bot.commands.bookcommand.*;
 import com.example.spring_booking_bot.commands.loginCommand.LeaveYourNameCommand;
 import com.example.spring_booking_bot.commands.loginCommand.RemainAnonymousCommand;
+import com.example.spring_booking_bot.commands.reviewcommand.*;
+import com.example.spring_booking_bot.helpers.DoctorEnum;
+import com.example.spring_booking_bot.helpers.RatingHelper;
+import com.example.spring_booking_bot.helpers.UserHelper;
+import com.example.spring_booking_bot.models.ReviewModel;
+import com.example.spring_booking_bot.models.UserModel;
 import com.example.spring_booking_bot.repos.UserRepo;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -36,9 +39,59 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+        //////////////////////////////////////////////////////////////////////////////
+       List<ReviewModel> reviewModelList = RatingHelper.getReviews();
+        ReviewModel defaultModel1 = new ReviewModel();
+        ReviewModel defaultModel2 = new ReviewModel();
+        ReviewModel defaultModel3 = new ReviewModel();
+        ReviewModel defaultModel4 = new ReviewModel();
+        ReviewModel defaultModel5 = new ReviewModel();
+        ReviewModel defaultModel6 = new ReviewModel();
+        defaultModel1.setRating(0.0);
+        defaultModel1.setDoctorEnum(DoctorEnum.ALLERGOLOG);
+        defaultModel1.setDoctorName("Аллерголог");
+        defaultModel1.setVisitCount(0);
+        defaultModel2.setRating(0.0);
+        defaultModel2.setDoctorEnum(DoctorEnum.GINEKOLOG);
+        defaultModel2.setDoctorName("Гинеколог");
+        defaultModel2.setVisitCount(0);
+        defaultModel3.setRating(0.0);
+        defaultModel3.setDoctorEnum(DoctorEnum.LOR);
+        defaultModel3.setDoctorName("Лор");
+        defaultModel3.setVisitCount(0);
+        defaultModel4.setRating(0.0);
+        defaultModel4.setDoctorEnum(DoctorEnum.HIRURG);
+        defaultModel4.setDoctorName("Хирург");
+        defaultModel4.setVisitCount(0);
+        defaultModel5.setRating(0.0);
+        defaultModel5.setDoctorEnum(DoctorEnum.OKULIST);
+        defaultModel5.setDoctorName("Окулист");
+        defaultModel5.setVisitCount(0);
+        defaultModel6.setRating(0.0);
+        defaultModel6.setDoctorEnum(DoctorEnum.TERAPEVT);
+        defaultModel6.setDoctorName("Терапевт");
+        defaultModel6.setVisitCount(0);
+       if (reviewModelList.isEmpty()){
+           RatingHelper.setDefaults(defaultModel1);
+           RatingHelper.setDefaults(defaultModel2);
+           RatingHelper.setDefaults(defaultModel3);
+           RatingHelper.setDefaults(defaultModel4);
+           RatingHelper.setDefaults(defaultModel5);
+           RatingHelper.setDefaults(defaultModel6);
+       }
+        //////////////////////////////////////////////////////////////////////////////
+        Boolean IsUser = false;
+        String userId = update.getMessage().getFrom().getId().toString();
+        UserModel userModel = UserHelper.findUser(userId);
+        if (userModel.getTgId() != null){
+            IsUser = true;
+        }
+        ///////////////////////////////////////////////////////////////////////////////
         KeyboardRow k = new KeyboardRow();
         k.add(new KeyboardButton("Log In"));
-
+        if (IsUser == true){
+            k.add(new KeyboardButton("Оставить отзыв на врача"));
+        }
         k.add(new KeyboardButton("Записаться к врачу"));
         SendMessage sendMessage = new SendMessage();
         sendMessage.setChatId(update.getMessage().getChatId().toString());
@@ -59,6 +112,14 @@ public class Bot extends TelegramLongPollingBot {
         list.add(new ChooseTime());
         list.add(new RemainAnonymousCommand());
         list.add(new LeaveYourNameCommand());
+        list.add(new ChooseReview());
+        list.add(new AllergologReviewCommand());
+        list.add(new GinekologReviewCommand());
+        list.add(new HirurgReviewCommand());
+        list.add(new LorReviewCommand());
+        list.add(new OkulistReviewCommand());
+        list.add(new TerapevtReviewCommand());
+        list.add(new ChooseRating());
         //////////////////////////////
             for (WorkerCommand w: list){
                 SendMessage res = w.start(update);

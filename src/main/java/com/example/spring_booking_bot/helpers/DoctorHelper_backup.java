@@ -1,7 +1,6 @@
 package com.example.spring_booking_bot.helpers;
 
 import com.example.spring_booking_bot.models.BookModel;
-import com.example.spring_booking_bot.models.UserModel;
 import com.example.spring_booking_bot.repos.BookRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,13 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class DoctorHelper {
+public class DoctorHelper_backup {
     @Autowired
     BookRepo bookRepo;
 
-    private static DoctorHelper doctorHelper = null;
+    private static DoctorHelper_backup doctorHelper = null;
 
-    public DoctorHelper() {
+    public DoctorHelper_backup() {
         doctorHelper = this;
     }
     public static void save(BookModel b){
